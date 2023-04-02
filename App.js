@@ -1,3 +1,4 @@
+import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -15,8 +16,8 @@ export default function App() {
           headerShown: false
         }}
       >
-        <StackNavigator.Screen name="Onboarding" component={OnboardingScreen} />
         <StackNavigator.Screen name="Profile" component={ProfileScreen} />
+        <StackNavigator.Screen name="Onboarding" component={OnboardingScreen} />
         <StackNavigator.Screen name="Home" component={HomeScreen} />
       </StackNavigator.Navigator>
     </NavigationContainer>

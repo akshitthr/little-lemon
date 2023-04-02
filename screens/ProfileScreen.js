@@ -7,7 +7,10 @@ import styles from '../styles';
 
 export default class ProfileScreen extends React.Component {
   state = {
-    isSelected: true
+    isSelected: true,
+    logOutPressed: false,
+    cancelPressed: false,
+    savePressed: false
   }
 
   render() {
@@ -19,14 +22,20 @@ export default class ProfileScreen extends React.Component {
           <View style={styles.contentContainer}>
             <Text style={styles.heading}>Account Settings</Text>
             <KeyboardAwareScrollView>
-              <View style={styles.inputContainer}>
-                <TextInput style={styles.inputField}></TextInput>
-                <TextInput style={styles.inputField}></TextInput>
-                <TextInput style={styles.inputField}></TextInput>
-                <TextInput style={styles.inputField}></TextInput>
-              </View>
+              <Text style={styles.labelSmall}>First Name</Text>
+              <TextInput style={styles.inputField} />
+              <Text style={styles.labelSmall}>Last Name</Text>
+              <TextInput style={styles.inputField} />
+              <Text style={styles.labelSmall}>Email</Text>
+              <TextInput style={styles.inputField} />
+              <Text style={styles.labelSmall}>Phone Number</Text>
+              <TextInput style={styles.inputField} keyboardType="numeric" />
+              <Text style={styles.labelSmall}>Email Notifications</Text>
               <BouncyCheckbox
                 style={styles.inputContainer}
+                textStyle={{
+                  textDecorationLine: "none",
+                }}
                 text="Order Statuses"
                 size={25}
                 fillColor="#33401c"
@@ -35,6 +44,9 @@ export default class ProfileScreen extends React.Component {
               />
               <BouncyCheckbox
                 style={styles.inputContainer}
+                textStyle={{
+                  textDecorationLine: "none",
+                }}
                 text="Password Changes"
                 size={25}
                 fillColor="#33401c"
@@ -43,6 +55,9 @@ export default class ProfileScreen extends React.Component {
               />
               <BouncyCheckbox
                 style={styles.inputContainer}
+                textStyle={{
+                  textDecorationLine: "none",
+                }}
                 text="Special Offers"
                 size={25}
                 fillColor="#33401c"
@@ -51,12 +66,31 @@ export default class ProfileScreen extends React.Component {
               />
               <BouncyCheckbox
                 style={styles.inputContainer}
+                textStyle={{
+                  textDecorationLine: "none",
+                }}
                 text="Newsletter"
                 size={25}
                 fillColor="#33401c"
                 unfillColor="#FFFFFF"
                 innerIconStyle={{ borderWidth: 2 }}
               />
+
+              <Pressable
+                style={this.state.cancelPressed ? styles.buttonPressed : styles.button}
+              >
+                <Text style={styles.buttonText}>Discard Changes</Text>
+              </Pressable>
+              <Pressable
+                style={this.state.savePressed ? styles.buttonPressed : styles.button}
+              >
+                <Text style={styles.buttonText}>Save Changes</Text>
+              </Pressable>
+              <Pressable
+                style={this.state.logOutPressed ? styles.buttonPressed : styles.button}
+              >
+                <Text style={styles.buttonText}>Log Out</Text>
+              </Pressable>
             </KeyboardAwareScrollView>
           </View>
         </View>

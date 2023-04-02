@@ -85,12 +85,11 @@ export default class OnboardingScreen extends React.Component {
 
             <Pressable
               style={!this.state.inputValid ? styles.buttonDisabled : this.state.buttonPressed ? styles.buttonPressed : styles.button}
-              // onPress={this.props.navigation.navigate("Profile")}
               onPressIn={this.handleButtonPressIn}
               onPressOut={this.handleButtonPressOut}
               disabled={!this.state.inputValid}
             >
-            <Text style={styles.buttonText}>Next</Text>
+              <Text style={styles.buttonText}>Next</Text>
             </Pressable>
           </KeyboardAwareScrollView>
         </View>

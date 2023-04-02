@@ -29,7 +29,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "bold",
     color: "#33401c",
-    marginTop: 24
+    marginTop: 24,
+    marginBottom: 24
   },
 
   label: {
@@ -39,14 +40,21 @@ const styles = StyleSheet.create({
     letterSpacing: 0.25,
     fontWeight: "bold"
   },
+  
+  labelSmall: {
+    color: "#666666",
+    fontSize: 18,
+    letterSpacing: 0.25,
+    fontWeight: "bold",
+    marginVertical: 6
+  },
 
   inputField: {
     borderWidth: 2,
     borderColor: "#33401c",
     marginVertical: 15,
-    marginHorizontal: 20,
     paddingHorizontal: 12,
-    paddingVertical: 12,
+    paddingVertical: 8,
     borderRadius: 5,
     fontSize: 20
   },
