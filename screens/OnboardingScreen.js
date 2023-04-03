@@ -47,7 +47,7 @@ export default function OnboardingScreen(props) {
 
       <View style={styles.contentContainer}>
         <Text style={styles.heading}>Let us get to know you!</Text>
-        <KeyboardAwareScrollView style={styles.formContainer}>
+        <KeyboardAwareScrollView style={styles.onboardingFormContainer}>
           <View style={styles.inputContainer}>
             <Text style={styles.label}>First Name</Text>
             <TextInput style={styles.inputField} onChangeText={setFirstName} />
@@ -59,12 +59,12 @@ export default function OnboardingScreen(props) {
           </View>
 
           <Pressable
-            style={!inputValid ? styles.buttonDisabled : buttonPressed ? styles.buttonPressed : styles.button}
+            style={!inputValid ? [styles.button, styles.buttonDisabled] : buttonPressed ? [styles.button, styles.buttonPress] : [styles.button, styles.darkButton]}
             onPressIn={handleButtonPressIn}
             onPressOut={handleButtonPressOut}
             disabled={!inputValid}
           >
-            <Text style={styles.buttonText}>Next</Text>
+            <Text style={[styles.buttonText, styles.darkButtonText]}>Next</Text>
           </Pressable>
         </KeyboardAwareScrollView>
       </View>
