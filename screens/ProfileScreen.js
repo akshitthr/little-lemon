@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { View, Text, TextInput, Pressable, Image } from "react-native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import * as ImagePicker from 'expo-image-picker';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
@@ -7,17 +8,33 @@ import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import styles from '../styles';
 
 export default function ProfileScreen() {
+  const [userData, setUserData] = useState({});
+
   const [image, setImage] = useState(null);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+
+  const [orderCheckbox, setOrderCheckbox] = useState(true);
+  const [passwordCheckbox, setPasswordCheckbox] = useState(true);
+  const [offersCheckbox, setOffersCheckbox] = useState(true);
+  const [newsletterCheckbox, setNewsletterCheckbox] = useState(true);
+
   const [inputValid, setInputValid] = useState(false);
   const [changePressed, setChangePressed] = useState(false);
   const [removePressed, setRemovePressed] = useState(false);
   const [cancelPressed, setCancelPressed] = useState(false);
   const [savePressed, setSavePressed] = useState(false);
   const [logoutPressed, setLogoutPressed] = useState(false);
+
+  const mounted = useRef();
+  useEffect(() => {
+    if (!mounted.current) {
+      getUserData();
+      mounted.current = true;
+    }
+  });
 
   useEffect(() => {
     setInputValid(validateInput());
@@ -42,18 +59,101 @@ export default function ProfileScreen() {
   };
   const handleCancelPressOut = () => {
     setCancelPressed(false);
+
+    getUserData();
   };
   const handleSavePressIn = () => {
     setSavePressed(true);
   };
   const handleSavePressOut = () => {
     setSavePressed(false);
+
+    const userData = {
+      image: image,
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      phoneNumber: phoneNumber,
+      orderCheckbox: orderCheckbox,
+      passwordCheckbox: passwordCheckbox,
+      offersCheckbox: offersCheckbox,
+      newsletterCheckbox: newsletterCheckbox
+    };
+
+    saveUserData(userData);
   };
   const handleLogoutPressIn = () => {
     setLogoutPressed(true);
   };
   const handleLogoutPressOut = () => {
     setLogoutPressed(false);
+    
+    clearAllData();
+  };
+  const handleOrderCheckboxPress = () => {
+    setOrderCheckbox(!orderCheckbox);
+  };
+  const handlePasswordCheckboxPress = () => {
+    setPasswordCheckbox(!passwordCheckbox);
+  };
+  const handleOffersCheckboxPress = () => {
+    setOffersCheckbox(!offersCheckbox);
+  };
+  const handleNewsletterCheckboxPress = () => {
+    setNewsletterCheckbox(!newsletterCheckbox);
+  };
+
+  const getUserData = async () => {
+    try {
+      const userData = await AsyncStorage.getItem("@user_data");
+      if (userData !== null) {
+        const jsonData = JSON.parse(userData);
+
+        setUserData(jsonData);
+
+        setImage(jsonData.image);
+        setFirstName(jsonData.firstName);
+        setLastName(jsonData.lastName);
+        setEmail(jsonData.email);
+        setPhoneNumber(jsonData.phoneNumber);
+
+        setOrderCheckbox(jsonData.orderCheckbox);
+        setPasswordCheckbox(jsonData.passwordCheckbox);
+        setOffersCheckbox(jsonData.offersCheckbox);
+        setNewsletterCheckbox(jsonData.newsletterCheckbox);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const saveUserData = async (userData) => {
+    try {
+      await AsyncStorage.setItem("@user_data", JSON.stringify(userData));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const clearAllData = async () => {
+    try {
+      await AsyncStorage.clear();
+
+      setUserData({});
+
+      setImage(null);
+      setFirstName("");
+      setLastName("");
+      setEmail("");
+      setPhoneNumber("");
+
+      setOrderCheckbox(false);
+      setPasswordCheckbox(false);
+      setOffersCheckbox(false);
+      setNewsletterCheckbox(false);
+    } catch (error) {
+      console.error(error);
+    }
   };
   
   const pickImage = async () => {
@@ -76,11 +176,11 @@ export default function ProfileScreen() {
   const getInitials = () => {
     let initials = "";
 
-    if (firstName) {
-      initials += firstName[0];
+    if (userData.firstName !== undefined) {
+      initials += userData.firstName[0];
     }
-    if (lastName) {
-      initials += lastName[0];
+    if (userData.lastName !== undefined) {
+      initials += userData.lastName[0];
     }
 
     return initials;
@@ -141,13 +241,13 @@ export default function ProfileScreen() {
             </View>
             </View>
             <Text style={styles.labelSmall}>First Name</Text>
-            <TextInput style={styles.inputField} onChangeText={setFirstName} />
+            <TextInput style={styles.inputField} onChangeText={setFirstName} value={firstName} />
             <Text style={styles.labelSmall}>Last Name</Text>
-            <TextInput style={styles.inputField} onChangeText={setLastName} />
+            <TextInput style={styles.inputField} onChangeText={setLastName} value={lastName} />
             <Text style={styles.labelSmall}>Email</Text>
-            <TextInput style={styles.inputField} onChangeText={setEmail} />
+            <TextInput style={styles.inputField} onChangeText={setEmail} value={email} autoCapitalize={"none"} />
             <Text style={styles.labelSmall}>Phone Number</Text>
-            <TextInput style={styles.inputField} keyboardType="numeric" onChangeText={setPhoneNumber} />
+            <TextInput style={styles.inputField} keyboardType="numeric" onChangeText={setPhoneNumber} value={phoneNumber} />
 
             <Text>{"\n"}</Text>
             <Text style={styles.labelSmall}>Email Notifications</Text>
@@ -161,6 +261,8 @@ export default function ProfileScreen() {
               fillColor="#33401c"
               unfillColor="#FFFFFF"
               innerIconStyle={{ borderWidth: 2 }}
+              isChecked={orderCheckbox}
+              onPress={handleOrderCheckboxPress}
             />
             <BouncyCheckbox
               style={styles.inputContainer}
@@ -172,6 +274,8 @@ export default function ProfileScreen() {
               fillColor="#33401c"
               unfillColor="#FFFFFF"
               innerIconStyle={{ borderWidth: 2 }}
+              isChecked={passwordCheckbox}
+              onPress={handlePasswordCheckboxPress}
             />
             <BouncyCheckbox
               style={styles.inputContainer}
@@ -183,6 +287,8 @@ export default function ProfileScreen() {
               fillColor="#33401c"
               unfillColor="#FFFFFF"
               innerIconStyle={{ borderWidth: 2 }}
+              isChecked={offersCheckbox}
+              onPress={handleOffersCheckboxPress}
             />
             <BouncyCheckbox
               style={styles.inputContainer}
@@ -194,6 +300,8 @@ export default function ProfileScreen() {
               fillColor="#33401c"
               unfillColor="#FFFFFF"
               innerIconStyle={{ borderWidth: 2 }}
+              isChecked={newsletterCheckbox}
+              onPress={handleNewsletterCheckboxPress}
             />
 
             <View style={styles.rowContainer}>
