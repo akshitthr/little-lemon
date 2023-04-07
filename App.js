@@ -6,6 +6,8 @@ import OnboardingScreen from './screens/OnboardingScreen';
 import HomeScreen from './screens/HomeScreen';
 import ProfileScreen from './screens/ProfileScreen';
 
+import HeaderLogo from './components/HeaderLogo';
+
 const StackNavigator = createNativeStackNavigator();
 
 export default function App() {
@@ -13,12 +15,12 @@ export default function App() {
     <NavigationContainer>
       <StackNavigator.Navigator
         screenOptions={{
-          headerShown: false
+          headerTitle: (props) => <HeaderLogo {...props} />
         }}
       >
-        <StackNavigator.Screen name="Profile" component={ProfileScreen} />
         <StackNavigator.Screen name="Onboarding" component={OnboardingScreen} />
         <StackNavigator.Screen name="Home" component={HomeScreen} />
+        <StackNavigator.Screen name="Profile" component={ProfileScreen} />
       </StackNavigator.Navigator>
     </NavigationContainer>
   );

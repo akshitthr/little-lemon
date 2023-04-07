@@ -211,9 +211,6 @@ export default function ProfileScreen() {
   
   return (
       <View style={styles.container}>
-        <View style={styles.headerContainer}>
-        </View>
-
         <View style={styles.contentContainer}>
           <Text style={styles.heading}>Account Settings</Text>
           <KeyboardAwareScrollView>
