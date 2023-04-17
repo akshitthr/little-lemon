@@ -1,12 +1,13 @@
-import { useEffect, useState } from "react";
 import { View, Text, TextInput, Pressable } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { useEffect, useState } from "react";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import styles from '../styles';
+import { styles } from './styles';
 
 export default function OnboardingScreen(props) {
-  const [firstName, setFirstName] = useState();
-  const [email, setEmail] = useState();
+  const [firstName, setFirstName] = useState("");
+  const [email, setEmail] = useState("");
   const [buttonPressed, setButtonPressed] = useState(false);
   const [inputValid, setInputValid] = useState(false);
 
@@ -20,7 +21,18 @@ export default function OnboardingScreen(props) {
 
   const handleButtonPressOut = () => {
     setButtonPressed(false);
-    props.navigation.navigate("Profile")
+
+    setFirstName("");
+    setEmail("");
+
+    saveUserData({
+      firstName: firstName,
+      email: email
+    });
+
+    setOnboardingComplete();
+
+    props.navigation.navigate("Home");
   };
   
   const validateInput = () => {
@@ -40,22 +52,35 @@ export default function OnboardingScreen(props) {
     return nameValid && emailValid;
   };
 
+  const saveUserData = async (userData) => {
+    try {
+      await AsyncStorage.setItem("@user_data", JSON.stringify(userData));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const setOnboardingComplete = async () => {
+    try {
+      await AsyncStorage.setItem("@onboarding_complete", "true");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <View style={styles.headerContainer}>
-      </View>
-
       <View style={styles.contentContainer}>
         <Text style={styles.heading}>Let us get to know you!</Text>
         <KeyboardAwareScrollView style={styles.onboardingFormContainer}>
           <View style={styles.inputContainer}>
             <Text style={styles.label}>First Name</Text>
-            <TextInput style={styles.inputField} onChangeText={setFirstName} />
+            <TextInput style={styles.inputField} onChangeText={setFirstName} value={firstName} />
           </View>
           
           <View style={styles.inputContainer}>
             <Text style={styles.label}>Email</Text>
-            <TextInput style={styles.inputField} onChangeText={setEmail} />
+            <TextInput style={styles.inputField} onChangeText={setEmail} value={email} autoCapitalize="none" />
           </View>
 
           <Pressable

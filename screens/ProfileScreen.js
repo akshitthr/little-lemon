@@ -1,20 +1,23 @@
-import { useRef, useEffect, useState } from 'react';
 import { View, Text, TextInput, Pressable, Image } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import * as ImagePicker from 'expo-image-picker';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import { useRef, useEffect, useState } from 'react';
 
-import styles from '../styles';
+import SplashScreen from "./SplashScreen";
 
-export default function ProfileScreen() {
-  const [userData, setUserData] = useState({});
+import { styles } from './styles';
 
+export default function ProfileScreen(props) {
+  const [loaded, setLoaded] = useState(false);
+  
   const [image, setImage] = useState(null);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [initials, setInitials] = useState("");
 
   const [orderCheckbox, setOrderCheckbox] = useState(true);
   const [passwordCheckbox, setPasswordCheckbox] = useState(true);
@@ -28,10 +31,11 @@ export default function ProfileScreen() {
   const [savePressed, setSavePressed] = useState(false);
   const [logoutPressed, setLogoutPressed] = useState(false);
 
-  const mounted = useRef();
+  const mounted = useRef(false);
   useEffect(() => {
     if (!mounted.current) {
       getUserData();
+
       mounted.current = true;
     }
   });
@@ -67,7 +71,7 @@ export default function ProfileScreen() {
   };
   const handleSavePressOut = () => {
     setSavePressed(false);
-
+    
     const userData = {
       image: image,
       firstName: firstName,
@@ -87,8 +91,16 @@ export default function ProfileScreen() {
   };
   const handleLogoutPressOut = () => {
     setLogoutPressed(false);
-    
-    clearAllData();
+    setLoaded(false);
+
+    setTimeout(() => {
+      clearAllData();
+
+      props.navigation.reset({
+        index: 0,
+        routes: [{ name: "Onboarding" }],
+      });
+    }, 500);
   };
   const handleOrderCheckboxPress = () => {
     setOrderCheckbox(!orderCheckbox);
@@ -105,17 +117,18 @@ export default function ProfileScreen() {
 
   const getUserData = async () => {
     try {
+      setLoaded(false);
+
       const userData = await AsyncStorage.getItem("@user_data");
       if (userData !== null) {
         const jsonData = JSON.parse(userData);
-
-        setUserData(jsonData);
 
         setImage(jsonData.image);
         setFirstName(jsonData.firstName);
         setLastName(jsonData.lastName);
         setEmail(jsonData.email);
         setPhoneNumber(jsonData.phoneNumber);
+        setInitials(getInitials(jsonData.firstName, jsonData.lastName));
 
         setOrderCheckbox(jsonData.orderCheckbox);
         setPasswordCheckbox(jsonData.passwordCheckbox);
@@ -124,6 +137,9 @@ export default function ProfileScreen() {
       }
     } catch (error) {
       console.error(error);
+    }
+    finally {
+      setLoaded(true);
     }
   };
 
@@ -138,8 +154,6 @@ export default function ProfileScreen() {
   const clearAllData = async () => {
     try {
       await AsyncStorage.clear();
-
-      setUserData({});
 
       setImage(null);
       setFirstName("");
@@ -173,17 +187,17 @@ export default function ProfileScreen() {
     setImage(null);
   };
 
-  const getInitials = () => {
-    let initials = "";
+  const getInitials = (firstName, lastName) => {
+    let str = "";
 
-    if (userData.firstName !== undefined) {
-      initials += userData.firstName[0];
+    if (firstName !== undefined) {
+      str += firstName[0];
     }
-    if (userData.lastName !== undefined) {
-      initials += userData.lastName[0];
+    if (lastName !== undefined) {
+      str += lastName[0];
     }
 
-    return initials;
+    return str.toUpperCase();
   };
 
   const validateInput = () => {
@@ -208,6 +222,10 @@ export default function ProfileScreen() {
 
     return firstNameValid && lastNameValid && emailValid && phoneNumberValid;
   };
+
+  if (!loaded) {
+    return <SplashScreen />
+  }
   
   return (
       <View style={styles.container}>
@@ -215,11 +233,11 @@ export default function ProfileScreen() {
           <Text style={styles.heading}>Account Settings</Text>
           <KeyboardAwareScrollView>
             <View style={styles.rowContainer}>
-              {
-                image ?
-                <Image style={styles.imageContainer} source={{ uri: image }} /> :
-                <View style={styles.initialContainer}><Text style={styles.initialText}>{getInitials()}</Text></View>
-              }
+              {image ? (
+                <Image style={styles.profileImage} source={{ uri: image }} />
+              ) : (
+                  <View style={styles.profileInitialsContainer}><Text style={styles.initialsText}>{initials}</Text></View>
+              )}
             <View style={styles.avatarButtonContainer}>
               <Pressable
                 style={changePressed ? [styles.vSmallButton, styles.buttonPress] : [styles.vSmallButton, styles.darkButton]}

@@ -12,6 +12,6 @@ export default function HeaderLogo() {
 const styles = StyleSheet.create({
   headerImage: {
     width: 185,
-    height: 40
+    height: 40,
   }
 });

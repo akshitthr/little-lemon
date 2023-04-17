@@ -1,9 +1,10 @@
 import { StyleSheet, Dimensions } from "react-native";
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ffffff"
+    backgroundColor: "#ffffff",
+    paddingBottom: 32
   },
 
   contentContainer: {
@@ -28,7 +29,7 @@ const styles = StyleSheet.create({
     justifyContent: "center"
   },
   
-  imageContainer: {
+  profileImage: {
     borderWidth: 2,
     borderRadius: 50,
     borderColor: "white",
@@ -37,7 +38,7 @@ const styles = StyleSheet.create({
     height: Dimensions.get("window").width * 0.5,
   },
 
-  initialContainer: {
+  profileInitialsContainer: {
     width: Dimensions.get("window").width * 0.5,
     height: Dimensions.get("window").width * 0.5,
     borderWidth: 2,
@@ -150,7 +151,7 @@ const styles = StyleSheet.create({
 
   logoutButton: {
     backgroundColor: "#ffea00",
-    borderColor: "#33401c",
+    borderColor: "#33401c"
   },
 
   darkButtonText: {
@@ -161,11 +162,86 @@ const styles = StyleSheet.create({
     color: "#33401c",
   },
 
-  initialText: {
+  initialsText: {
     fontSize: 96,
     color: "white",
     textAlign: "center"
   },
 });
 
-export default styles;
+export const homeScreenStyles = StyleSheet.create({
+  bannerBackground: {
+    backgroundColor: "#33401c",
+  },
+
+  bannerContainer: {
+    paddingVertical: 24
+  },
+
+  bannerTitle: {
+    fontSize: 32,
+    color: "yellow"
+  },
+
+  bannerSubtitle: {
+    fontSize: 24,
+    color: "white",
+    marginBottom: 12
+  },
+
+  bannerText: {
+    width: Dimensions.get("window").width * 0.4,
+    color: "white"
+  },
+
+  bannerImage: {
+    width: Dimensions.get("window").width * 0.4,
+    height: Dimensions.get("window").width * 0.4,
+    borderRadius: 10,
+    marginHorizontal: 12
+  },
+
+  searchBar: {
+    borderWidth: 2,
+    borderColor: "#E5E4E2",
+    marginTop: 16,
+    marginHorizontal: 16,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 25,
+    fontSize: 20,
+    backgroundColor: "white"
+  },
+
+  orderText: {
+    marginHorizontal: 12,
+    marginTop: 16,
+    fontSize: 20,
+    fontWeight: "800"
+  },
+
+  menuItems: {
+    marginHorizontal: 18,
+    flex: 1
+  },
+});
+
+export const splashScreenStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#ffffff",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+
+  logo: {
+    width: 256,
+    height: 64
+  },
+
+  loadingIcon: {
+    width: 64,
+    height: 64,
+    marginTop: 32
+  },
+});
